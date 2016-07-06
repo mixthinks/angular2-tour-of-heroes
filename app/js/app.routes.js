@@ -18,8 +18,7 @@ var routes = [
     },
     {
         path: '',
-        redirectTo: '/dashboard',
-        pathMatch: 'full'
+        redirectTo: '/dashboard'
     },
 ];
 exports.APP_ROUTER_PROVIDERS = [

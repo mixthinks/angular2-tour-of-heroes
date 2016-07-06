@@ -9,6 +9,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 var core_1 = require('@angular/core');
+var hero_detail_component_1 = require('./hero-detail.component');
 var hero_service_1 = require('./hero.service');
 var router_1 = require('@angular/router');
 var HeroesComponent = (function () {
@@ -16,13 +17,38 @@ var HeroesComponent = (function () {
         this.router = router;
         this.heroService = heroService;
         this.title = 'Tour of Heroes';
+        this.addingHero = false;
     }
     HeroesComponent.prototype.onselect = function (hero) {
         this.selectedHero = hero;
+        this.addingHero = false;
+    };
+    HeroesComponent.prototype.addHero = function () {
+        this.addingHero = true;
+        this.selectedHero = null;
+    };
+    HeroesComponent.prototype.close = function (savedHero) {
+        this.addingHero = false;
+        if (savedHero) {
+            this.getHeroes();
+        }
+    };
+    HeroesComponent.prototype.deleteHero = function (hero, event) {
+        var _this = this;
+        event.stopPropagation();
+        this.heroService
+            .delete(hero)
+            .then(function (res) {
+            _this.heroes = _this.heroes.filter(function (h) { return h !== hero; });
+            if (_this.selectedHero === hero) {
+                _this.selectedHero = null;
+            }
+        })
+            .catch(function (error) { return _this.error = error; });
     };
     HeroesComponent.prototype.getHeroes = function () {
         var _this = this;
-        this.heroService.getHeroes().then(function (heroes) { return _this.heroes = heroes; });
+        this.heroService.getHeroes().then(function (heroes) { return _this.heroes = heroes; }).catch(function (error) { return _this.error = error; });
     };
     HeroesComponent.prototype.ngOnInit = function () {
         this.getHeroes();
@@ -35,7 +61,8 @@ var HeroesComponent = (function () {
         core_1.Component({
             selector: 'my-heroes',
             templateUrl: 'app/template/heroes.component.html',
-            styleUrls: ['app/css/heroes.component.css']
+            styleUrls: ['app/css/heroes.component.css'],
+            directives: [hero_detail_component_1.HeroDetailComponent]
         }), 
         __metadata('design:paramtypes', [router_1.Router, hero_service_1.HeroService])
     ], HeroesComponent);
